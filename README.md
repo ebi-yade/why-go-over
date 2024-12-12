@@ -19,7 +19,7 @@ brew install ebi-yade/tap/why-go-over
 ### From Source
 
 ```shell
-go install github.com/ebi-yade/why-go-over@latest
+go install github.com/ebi-yade/why-go-over/cmd/why-go-over@latest
 ```
 
 ### Downloading the Binary
