@@ -7,8 +7,8 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
-    main: ./cmd/go-template
-    binary: go-template
+    main: ./cmd/why-go-over
+    binary: why-go-over
     ldflags:
       - -s -w
       - -X main.Version={{.Version}}
