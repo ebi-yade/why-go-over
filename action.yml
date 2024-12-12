@@ -1,0 +1,59 @@
+name: Setup go-template
+description: "Install a binary from https://github.com/ebi-yade/go-template/releases"
+inputs:
+  version:
+    description: "The version to install go-template"
+    default: latest
+    required: false
+  github-token:
+    description: "The token used when calling GitHub API"
+    required: false
+    default: ${{ github.token }}
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      env:
+        github_token: ${{ inputs.github-token }}
+        VERSION: ${{ inputs.version }}
+      run: |
+        set -eo pipefail
+        ARCH=$(uname -m)
+        if [ "${ARCH}" = "x86_64" ]; then
+          GOARCH="amd64"
+        elif [ "${ARCH}" = "aarch64" ]; then
+          GOARCH="arm64"
+        else
+          echo "Unsupported architecture: ${ARCH}"
+          exit 1
+        fi
+
+        echo "VERSION=${VERSION} GOARCH=${GOARCH}"
+
+        api_request_args=("-sS")
+        if [[ -n "$github_token" ]]; then
+          api_request_args=("${api_request_args[@]}" -H "authorization: token $github_token")
+        fi
+        if [ "${VERSION}" = "latest" ]; then
+          DOWNLOAD_URL=$(curl "${api_request_args[@]}" https://api.github.com/repos/ebi-yade/go-template/releases \
+            | jq --arg matcher "linux.${GOARCH}." -r '[.[]|select(.prerelease==false)][0].assets[].browser_download_url|select(match($matcher))')
+        else
+          DOWNLOAD_URL=https://github.com/ebi-yade/go-template/releases/download/${VERSION}/go-template_${VERSION:1}_linux_${GOARCH}.tar.gz
+        fi
+        echo "DOWNLOAD_URL=${DOWNLOAD_URL}"
+        mkdir -p ${RUNNER_TOOL_CACHE}/go-template
+        cd /tmp
+        curl -sfLO ${DOWNLOAD_URL}
+        if [[ "${DOWNLOAD_URL}" =~ \.tar\.gz$ ]]; then
+          FILENAME=$(basename $DOWNLOAD_URL .tar.gz)
+          tar xzvf ${FILENAME}.tar.gz
+          sudo install go-template ${RUNNER_TOOL_CACHE}/go-template/go-template
+        elif [[ "${DOWNLOAD_URL}" =~ \.zip$ ]]; then
+          FILENAME=$(basename $DOWNLOAD_URL .zip)
+          unzip ${FILENAME}.zip
+          sudo install ${FILENAME} ${RUNNER_TOOL_CACHE}/go-template/go-template
+        fi
+
+        echo "Adding ${RUNNER_TOOL_CACHE}/go-template to path..."
+        echo "${RUNNER_TOOL_CACHE}/go-template" >> $GITHUB_PATH
+        "${RUNNER_TOOL_CACHE}/go-template/go-template" --version
