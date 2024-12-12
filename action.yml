@@ -56,4 +56,4 @@ runs:
 
         echo "Adding ${RUNNER_TOOL_CACHE}/why-go-over to path..."
         echo "${RUNNER_TOOL_CACHE}/why-go-over" >> $GITHUB_PATH
-        "${RUNNER_TOOL_CACHE}/why-go-over/why-go-over" --version
+        "${RUNNER_TOOL_CACHE}/why-go-over/why-go-over" -v
