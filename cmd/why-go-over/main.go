@@ -42,7 +42,7 @@ func _main() error {
 		return err
 	}
 
-	deps := app.NewDeps(os.Stdout, &app.X{})
+	deps := app.NewDeps(&app.X{})
 	res, err := deps.WhyGoOver(ctx, currentModulePath, CLI.ReleaseVersion)
 	if err != nil {
 		return err

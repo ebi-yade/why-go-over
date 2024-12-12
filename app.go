@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	"io"
 	"log/slog"
 	"maps"
 	"slices"
@@ -15,13 +14,11 @@ import (
 
 // Deps is a set of dependencies for testing
 type Deps struct {
-	stdout io.Writer
 	loader PackagesLoader
 }
 
-func NewDeps(stdout io.Writer, loader PackagesLoader) *Deps {
+func NewDeps(loader PackagesLoader) *Deps {
 	return &Deps{
-		stdout: stdout,
 		loader: loader,
 	}
 }
