@@ -30,7 +30,7 @@ You can download the binary from the [releases page](https://github.com/ebi-yade
 
 ## Usage
 
-Imagine you run `go get -u ./...` and notice that the `go` directive in your `go.mod` file has unexpectedly been updated from `1.22` to `1.23`.
+Imagine you run `go get -u ./...` and notice that the `go` directive in your `go.mod` file has unexpectedly been updated from 1.22 to 1.23.
 
 To identify which modules caused the required Go version to increase, run:
 
